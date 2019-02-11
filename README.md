@@ -4,9 +4,14 @@
 
 Steps to deploy the smart-contract:
 
-1. Install truffle globally using "sudo npm i -g truffe"
-2. Open Ganache in the background and from the project root folder, do "truffle complie" in the terminal to compile the smart-comtract
-3. Do "truffle migrate --reset" to deploy the smart-contract in the Ganache
+1. Install truffle globally using "sudo npm i -g truffle"
+2. Open Ganache and set the following
+    HOSTNAME=127.0.0.1
+    PORT NUMBER=7545
+    NETWORK ID=5777
+and restart the Ganache. 
+3. From the project root folder, do "truffle complie" in the terminal to compile the smart-comtract
+4. Do "truffle migrate --reset" to deploy the smart-contract in the Ganache
 
 
 Steps to test the smart-contract:
