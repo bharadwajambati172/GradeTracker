@@ -26,3 +26,9 @@ Steps to run the api:
 2. From api folder run "nodemon app.js" to run the api. It will run on port 3090
 3. Import the postman collections using the below url to test the api in the postman
     url="https://www.getpostman.com/collections/8735deb452d6fb1968d6"
+4. Endpoints to test in postman
+    POST /courses/ Body: { "courseId", "courseTitle"} adds a course
+    POST /courses/:courseId/students adds a student to a course
+    PUT /courses/:courseId/students/:studentId/grade grades a student
+    GET /courses/:courseId/students/:studentId/grade returns the student's grade for a course
+    GET /restaurants/:courseId/averagegrade returns the average grade for a course
