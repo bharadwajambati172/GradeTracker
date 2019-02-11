@@ -1,0 +1,62 @@
+pragma solidity 0.5.1;
+
+contract GradeTracker{
+
+    struct Student{
+        uint studentId;
+        uint grade ;
+    }
+    mapping(uint=>string) courses;
+    uint[] courseIds;
+    mapping(uint=>Student[]) studentsDetails;
+    mapping(uint=>uint[]) students;
+
+    event CourseAdded(uint courseId, string courseTitle);
+    event StudentAdded(uint courseId, uint studentId);
+    event StudentGraded(uint courseId, uint studentId, uint grade);
+
+    function addCourse(uint courseId, string memory courseTitle) public {
+        bool exists=false;
+        courses[courseId]=courseTitle;
+        for(uint i=0;i<courseIds.length;i++){
+            if(courseIds[i] != courseId){
+                exists=false;
+            }else{
+                exists=true;
+                break;
+            }
+        }
+        if(!exists){
+            courseIds.push(courseId);
+        }
+        emit CourseAdded(courseId, courseTitle);
+    }
+    function addStudentToCourse(uint courseId, uint studentId) public{
+        bool exists=false;
+        for(uint i=0;i<courseIds.length;i++){
+            if(courseIds[i] != courseId){
+                exists=false;
+            }else{
+                exists=true;
+                break;
+            }
+        }
+        if(exists){
+            uint[] memory studentsList=students[courseId];
+            students[courseId] = studentsList.push(studentId);
+        }else{
+
+        }
+        emit StudentAdded(courseId, studentId);
+    }
+    function gradeStudentForACourse(uint courseId, uint studentId, uint grade) public{
+        bool exists=false;
+        emit StudentGraded(courseId, studentId, grade);   
+    }
+    function getClassAverageGrade() public view returns (uint) {
+        
+    }
+    function getStudentGrade(uint studentId) public view returns (uint) {
+        
+    }
+}
