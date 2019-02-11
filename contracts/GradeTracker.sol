@@ -2,20 +2,24 @@ pragma solidity ^0.5.0;
 
 contract GradeTracker{
 
-    mapping(uint=>string) courses;
-    uint[] courseIds;
-    mapping(uint=>mapping(uint=>uint)) studentsDetails;
-    mapping(uint=>uint[]) courseStudentIds;
+    mapping(string=>string) courses;
+    string[] courseIds;
+    mapping(string=>mapping(string=>uint)) studentsDetails;
+    mapping(string=>string[]) courseStudentIds;
 
-    event CourseAdded(uint courseId, string courseTitle);
-    event StudentAdded(uint courseId, uint studentId);
-    event StudentGraded(uint courseId, uint studentId, uint grade);
+    //CourseAdded event
+    event CourseAdded(string courseId, string courseTitle);
+    //StudentAdded event
+    event StudentAdded(string courseId, string studentId);
+    //StudentGraded event
+    event StudentGraded(string courseId, string studentId, uint grade);
 
-    function addCourse(uint courseId, string memory courseTitle) public {
+    //This function records a course with courseId and courseTitle and finally emits the CourseAdded event
+    function addCourse(string memory courseId, string memory courseTitle) public {
         bool exists=false;
         courses[courseId]=courseTitle;
         for(uint i=0;i<courseIds.length;i++){
-            if(courseIds[i] != courseId){
+            if(keccak256(bytes(courseIds[i])) != keccak256(bytes(courseId))){
                 exists=false;
             }else{
                 exists=true;
@@ -27,7 +31,8 @@ contract GradeTracker{
         }
         emit CourseAdded(courseId, courseTitle);
     }
-    function addStudentToCourse(uint courseId, uint studentId) public{
+    //This function adds student to a course and finally emits the StudentAdded event 
+    function addStudentToCourse(string memory courseId, string memory studentId) public{
         if(keccak256(bytes(courses[courseId])) != keccak256((bytes("")))){
             studentsDetails[courseId][studentId]=0;
             courseStudentIds[courseId].push(studentId);
@@ -36,7 +41,8 @@ contract GradeTracker{
         }
         emit StudentAdded(courseId, studentId);
     }
-    function gradeStudentForACourse(uint courseId, uint studentId, uint grade) public{
+    //This function will grade a student for a particular cours and finally emits the StudentGraded event
+    function gradeStudentForACourse(string memory courseId, string memory studentId, uint grade) public{
         if((checkCourseAndStudentExists(courseId, studentId)==true)&&(grade>=0 && grade <=100)){
             studentsDetails[courseId][studentId]=grade;
         }else{
@@ -45,7 +51,8 @@ contract GradeTracker{
         }
         emit StudentGraded(courseId, studentId, grade);   
     }
-    function getClassAverageGrade(uint courseId) public view returns (uint) {
+    //This function will returns the average class grade
+    function getClassAverageGrade(string memory courseId) public view returns (uint) {
         if(keccak256(bytes(courses[courseId])) != keccak256((bytes("")))){
             return classAverage(courseId);
         }else{
@@ -53,29 +60,30 @@ contract GradeTracker{
 
         }
     }
-    function getStudentGrade(uint courseId, uint studentId) public view returns (uint) {
+    //This function will returns the student grade for a particular course
+    function getStudentGrade(string memory courseId, string memory studentId) public view returns (uint) {
         if(checkCourseAndStudentExists(courseId, studentId)==true){
             return studentsDetails[courseId][studentId];
         }else{
             revert("CourseId or StudentId doesn't exists");
         }
     }
-
-    function checkCourseAndStudentExists(uint courseId, uint studentId) internal view returns(bool){
+    //This internal function will retruns True/False based on studentId and the courseId
+    function checkCourseAndStudentExists(string memory courseId, string memory studentId) internal view returns(bool){
         if(keccak256(bytes(courses[courseId])) != keccak256((bytes("")))){
-            uint[] memory studentIds=courseStudentIds[courseId];
+            string[] memory studentIds=courseStudentIds[courseId];
             for(uint i=0;i<studentIds.length;i++){
-                if(studentIds[i]==studentId){
+                if(keccak256(bytes(studentIds[i]))==keccak256(bytes(studentId))){
                     return true;
                 }
             }
         }
         return false;
     }
-
-    function classAverage(uint courseId) internal view returns (uint) {
+    //This internal function will returns the classAverage for a particular course
+    function classAverage(string memory courseId) internal view returns (uint) {
         uint sum=0;
-        uint[] memory studentIds=courseStudentIds[courseId];
+        string[] memory studentIds=courseStudentIds[courseId];
         for(uint i=0;i<studentIds.length;i++){
             sum+=studentsDetails[courseId][studentIds[i]];
         }
